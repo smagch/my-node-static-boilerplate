@@ -1,0 +1,20 @@
+{
+  "name": "asahikawa-coderdojo-pre",
+  "version": "0.1.2",
+  "private": true,
+  "dependencies": {
+    "express": "3.0.0beta2",
+    "connect": "2.x",
+    "stylus": "~0.27",
+    "nib": "*",
+    "jade": "~0.26"
+  },
+  "devDependencies": {
+    "mocha": "1.x"
+  },
+  "engines": {
+    "node": "0.6.x"
+  },
+  "author": "smagch <smagch@gmail.com>",
+  "description": "website pre design"
+}
