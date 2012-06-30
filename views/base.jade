@@ -1,5 +1,8 @@
 !!!
 html.no-js
+  block variables
+    - var lang = "ja"
+  - var suffix = lang == "ja" ? "" : lang
   head
     block head-title
       title CoderDojo Asahikawa
@@ -8,9 +11,9 @@ html.no-js
   body
     p hello world
     ul
-    li: a(href='/about') about
-    li: a(href='/blog') blog
-    li: a(href='/') home
-
+      li: a(href='/about/#{suffix}') about
+      li: a(href='/blog/#{suffix}') blog
+      li: a(href='/') home japanese
+      li: a(href='/en') home english
     block msg
       p this is base message
