@@ -1,4 +1,4 @@
-JADE_BIN = ./node_modules/.bin/jade
+JADE_BIN = ./node_modules/jade/bin/jade
 JADE = $(shell find ./views -type f -name 'index.jade')
 HTML = $(patsubst ./views/%,./public/%, $(JADE:.jade=.html))
 # HTML_LIBS = $(shell find ./views -type f -name 'base.jade')
@@ -15,7 +15,7 @@ ensureDir:
 	@mkdir -p $(dir $(CSS) (HTML))
 
 public/%.html: views/%.jade
-	@$(JADE_BIN) < $< --path $< --obj `cat ./locals/i18n/base.js | tr -d "\n" | tr -d " "` > $@
+	@$(JADE_BIN) < $< --path $< --use moment=moment,marked=marked,base=./locals/i18n/base > $@
 
 public/%.css: %.styl
 	@$(STYLUS_BIN) < $< --use $(STYLUS_LIB) --compress > $@
