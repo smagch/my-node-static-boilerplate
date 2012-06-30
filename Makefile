@@ -12,7 +12,7 @@ all: ensureDir $(HTML) $(CSS)
 	@echo build complete
 
 ensureDir:
-	@mkdir -p $(dir $(CSS) (HTML))
+	@mkdir -p $(dir $(CSS) $(HTML))
 
 public/%.html: views/%.jade
 	@$(JADE_BIN) < $< --path $< --use moment=moment,marked=marked,base=./locals/i18n/base > $@
