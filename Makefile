@@ -15,7 +15,7 @@ ensureDir:
 	@mkdir -p $(dir $(CSS) $(HTML))
 
 public/%.html: views/%.jade
-	@$(JADE_BIN) < $< --path $< --use moment=moment,marked=marked,base=./locals/i18n/base > $@
+	@$(JADE_BIN) < $< --path $< --obj ./locals/index --use base=./locals/i18n/base > $@
 
 public/%.css: %.styl
 	@$(STYLUS_BIN) < $< --use $(STYLUS_LIB) --compress > $@
