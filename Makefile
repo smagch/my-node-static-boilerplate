@@ -11,6 +11,9 @@ STYLUS_BIN = ./node_modules/.bin/stylus
 all: ensureDir $(HTML) $(CSS)
 	@echo build complete
 
+build:
+	@node dev.build.js
+
 ensureDir:
 	@mkdir -p $(dir $(CSS) $(HTML))
 
