@@ -10,11 +10,15 @@
     "jade": "*",
     "marked": "~0.2",
     "moment": "~1.6",
-    "mocha": "1.x"
+    "JSONSelect": "~0.4",
+    "request": "~2.9",
+    "mocha": "1.x",
+    "async": "~0.1",
+    "debug": "~0.7"
   },
   "preinstall" : "git submodule update --init",
   "engines": {
-    "node": "0.6.x"
+    "node": "0.8.x"
   },
   "author": "smagch <smagch@gmail.com>",
   "description": "website pre design"
