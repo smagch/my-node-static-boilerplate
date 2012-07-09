@@ -10,28 +10,28 @@ var req = require('request')
   , debug = require('debug')('dev')
   , matcher = /^views\/(.*index)\.jade/;
 
-glob('views/**/index.jade', function (err, files) {
-  if (err) throw err
+module.exports = buildHtml;
 
-  var reqPaths = files.map(function (filename) {
-    var match = matcher.exec(filename)
-    if (!match || !match[1]) {
-      throw new Error('no match : ' + filename)
-    }
+function buildHtml(done) {
+  glob('views/**/index.jade', function (err, files) {
+    if (err) done(err);
 
-    debug('file : ' + match[1] + '.html')
+    var reqPaths = files.map(function (filename) {
+      var match = matcher.exec(filename);
+      if (!match || !match[1]) throw new Error('no match : ' + filename);
+      debug('file : ' + match[1] + '.html');
+      return match[1] + '.html';
+    });
 
-    return match[1] + '.html'
-  })
-
-  async.map(reqPaths, write, function (err, results) {
-    if (err) throw err
-    console.log('build finished, wrote ' + results.length + ' files')
-  })
-})
+    async.map(reqPaths, write, done);
+  });
+}
 
 function write(filename, done) {
-  var abort;
+  var writePath = path.resolve('.', 'public', filename)
+    , abort;
+
+  debug('writePath : ' + writePath);
 
   req('http://localhost:3000/' + filename)
     .on('error', function (err) {
@@ -41,16 +41,16 @@ function write(filename, done) {
     })
     .on('end', function () {
       if (abort) return
-      // done()
       debug('reqest end : ' + filename)
     })
-    .pipe(fs.createWriteStream(path.resolve('.', 'foo.html')))
+    .pipe(fs.createWriteStream(writePath))
       .on('error', function (err) {
         if (abort) return
         done(err)
       })
       .on('close', function () {
          if (abort) return
-         done(null, 'OK')
+         // simply return filename
+         done(null, filename)
       })
 }

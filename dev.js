@@ -4,38 +4,56 @@
  */
 
 var express = require('express')
-  , http = require('http');
+  , http = require('http')
+  , path = require('path')
+  , debug = require('debug')('dev')
+  , app = module.exports = express()
+  , publicPath = path.resolve('.', 'public');
 
-var app = module.exports = express();
 
-// Configuration
-var publicPath = require('path').resolve('.', 'public');
-var path = require('path')
-  , exec = require('child_process').exec;
+/**
+ * add view locals
+ */
+app.locals(require('./locals'));
 
-function execMake(filename, next) {
-  exec('make ' + filename + ' -B', function (err, stderr, stdout) {
-    console.log('made : ' + filename);
-    next();
-  });
-};
+/**
+ * set view engine jade
+ */
+app.set('view engine', 'jade');
 
+/**
+ * add stylus middleware
+ * it's fine since this server is for development only
+ */
+app.use(require('./routes/stylus'));
+
+/**
+ * router
+ */
+app.use(app.router);
+
+/**
+ * only render index.jade
+ * to see list of pages, `make pages`
+ */
 app.get('*/', function (req, res, next) {
-  execMake('public' + req.url + '.html', next);
+  var url = req.url;
+  debug('GET ' + url);
+  res.render(url.substr(1) + 'index')
 });
 
-app.get('*.html', function (req, res, next) {
-  execMake('public' + req.url, next);
-});
+app.get('*/index.html', function (req, res, next) {
+  debug('GET ' + req.url);
 
-app.get('*.css', function (req, res, next) {
-  execMake('public' + req.url, next);
+  var match = /^\/(.+)\.html$/.exec(req.url);
+  debug('about to render : ' + match[1]);
+  res.render(match[1]);
 });
 
 app.use(express.static(publicPath));
-app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
+// app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
 
 http.createServer(app).listen(3000, function () {
-  console.log('server start');
+  debug('dev server start')
 });

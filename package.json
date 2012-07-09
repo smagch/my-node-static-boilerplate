@@ -6,6 +6,7 @@
     "express": "3.0.0beta2",
     "connect": "2.x",
     "stylus": "~0.27",
+    "optimist": "~0.3",
     "nib": "*",
     "jade": "*",
     "marked": "~0.2",
