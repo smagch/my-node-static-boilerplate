@@ -8,13 +8,30 @@ var express = require('express')
   , path = require('path')
   , debug = require('debug')('dev')
   , app = module.exports = express()
-  , publicPath = path.resolve('.', 'public');
-
+  , publicPath = path.resolve('.', 'public')
+  , mf = require('./routes/mf');
 
 /**
  * add view locals
  */
+
 app.locals(require('./locals'));
+
+//var mf = new MessageFormat();
+app.locals.use(function (req, res, done) {
+  var lang;
+  if (/\/en\//.test(req.url)) {
+    lang = 'en';
+  } else {
+    lang = 'ja';
+  }
+
+  res.locals.lang = lang;
+  res.locals.suffix = lang === 'ja' ? '' : lang;
+
+  res.locals.i18n = mf.use(lang);
+  done();
+});
 
 /**
  * set view engine jade

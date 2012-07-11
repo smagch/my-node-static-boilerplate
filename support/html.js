@@ -7,6 +7,7 @@ var req = require('request')
   , async = require('async')
   , path = require('path')
   , fs = require('fs')
+  , mkdirp = require('mkdirp')
   , debug = require('debug')('dev')
   , matcher = /^views\/(.*index)\.jade/;
 
@@ -27,30 +28,34 @@ function buildHtml(done) {
   });
 }
 
+// TODO only statusCode 200
 function write(filename, done) {
   var writePath = path.resolve('.', 'public', filename)
     , abort;
 
   debug('writePath : ' + writePath);
 
-  req('http://localhost:3000/' + filename)
-    .on('error', function (err) {
-      if (abort) return
-      abort = true
-      done(err)
-    })
-    .on('end', function () {
-      if (abort) return
-      debug('reqest end : ' + filename)
-    })
-    .pipe(fs.createWriteStream(writePath))
+  mkdirp(path.dirname(writePath), function (err) {
+    if (err) return done(err);
+    req('http://localhost:3000/' + filename)
       .on('error', function (err) {
         if (abort) return
+        abort = true
         done(err)
       })
-      .on('close', function () {
-         if (abort) return
-         // simply return filename
-         done(null, filename)
+      .on('end', function () {
+        if (abort) return
+        debug('reqest end : ' + filename)
       })
+      .pipe(fs.createWriteStream(writePath))
+        .on('error', function (err) {
+          if (abort) return
+          done(err)
+        })
+        .on('close', function () {
+           if (abort) return
+           // simply return filename
+           done(null, filename)
+        });
+  });
 }
